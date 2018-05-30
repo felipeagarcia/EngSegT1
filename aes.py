@@ -9,20 +9,25 @@ def encript (plain_text, key):
 	num_blocks = len(text)
 	for n in range(num_blocks):
 		for i in range(rounds):
-			round_key = key[4*i : 4*i + 4]
-			print('before',text[n])
+			round_key = calc_round_key(key, i)
 			text[n] = SubBytes(text[n])
-			print('sub', text[n])
 			text[n] = ShiftRows(text[n])
-			print('rot', text[n])
 			MixColumns(text[n])
 			AddRoundKey(text[n], round_key)
-			print('text',text[n])
 	return matrix_to_text(text)
 
 def decript (encripted_text, key):
 	encripted_text = encripted_text + "decripted"
 	return encripted_text
+
+def calc_round_key(key, num_round):
+	round_key = key[4*num_round : 4*num_round + 4]
+	l = []
+	for i in range(4):
+		l.append([])
+		for j in range(4):
+			l[i].append(round_key[i][2*j:2*j + 2])
+	return l
 
 def text_to_matrix(text):
 	text_matrix = []
@@ -98,7 +103,6 @@ def rot_word(word, n):
 
 def sub_word(word):
 	l = []
-	print(word)
 	for i in range(4):
 		l.append(format(s_box[int((word)[i*2:i*2 + 1], 16) * 16 +  int((word)[i*2 + 1:i*2 + 2], 16) ], 'x'))
 	return ''.join(l)
@@ -109,6 +113,7 @@ def SubBytes(text):
 		for j in range(4):
 			if(len(text[i][j]) == 1):
 				text[i][j] = '0' + text[i][j]
+	#applying the sbox for each byte
 	for i in range(4):
 		for j in range(4):
 			text[i][j] = format(s_box[int((text[i][j])[0:1] , 16) * 16 + int((text[i][j])[1:2], 16)] , 'x')
@@ -116,12 +121,30 @@ def SubBytes(text):
 
 def ShiftRows(text):
 	i = 0
+	#shifting each row in i positions
 	for i in range(4):
 		text[i] = rot_word(text[i], i)
 	return text
 
-def MixColumns(plain_text):
-	return plain_text
+def MixColumns(text):
+	#converting the text to int, to use on the xor operations
+	for i in range(4):
+		for j in range(4):
+			text[i][j] = int(text[i][j], 16)
+	aux = text
+	for j in range(4):
+		text[0][j] = (2*aux[0][j]) ^ (3*aux[1][j]) ^ aux[2][j] ^ aux[3][j]
+		text[1][j] = aux[0][j] ^ (2*aux[1][j]) ^ (3*aux[2][j]) ^ aux[3][j]
+		text[2][j] = aux[0][j] ^ aux[1][j] ^ (2*aux[2][j]) ^ (3*aux[3][j])
+		text[3][j] = (3*aux[0][j]) ^ aux[1][j] ^ aux[2][j] ^ (2*aux[3][j])
+	#converting the text back to hex
+	for i in range(4):
+		for j in range(4):
+			text[i][j] = format(text[i][j], 'x')
+	return text
 
-def AddRoundKey(plain_text, key):
-	return plain_text
+def AddRoundKey(text, key):
+	for i in range(4):
+		for j in range(4):
+			text[i][j] = format( int( text[i][j], 16) ^ int( key[i][j], 16) , 'x')
+	return text
