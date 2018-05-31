@@ -135,6 +135,8 @@ def sub_word(word):
 	return ''.join(l)
 
 def mult_gf(a, b):
+	'multiplication in gf(2^8)'
+	#this function is probably incorrect
 	if (format(a, 'b')[0] == '0'):
 		return a
 	else:
@@ -147,6 +149,7 @@ def mult_gf(a, b):
 		return a
 
 def SubBytes(text, mode):
+	'use sboxes to replace bytes'
 	#adding zero of hex numns of len = 1
 	for i in range(4):
 		for j in range(4):
@@ -201,6 +204,7 @@ def MixColumns(text, mode):
 	return text
 
 def AddRoundKey(text, key):
+	'xor between the text and the round key'
 	for i in range(4):
 		for j in range(4):
 			text[i][j] = format( int( text[i][j], 16) ^ int( key[i][j], 16) , 'x')
