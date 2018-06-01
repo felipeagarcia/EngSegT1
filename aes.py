@@ -9,14 +9,22 @@ def encript (plain_text, key):
 	rounds = 10
 	print('encripting')
 	text = text_to_matrix(plain_text)
+	print('plain text', text)
 	num_blocks = len(text)
 	for n in range(num_blocks):
-		for i in range(rounds):
-			round_key = calc_round_key(key, i)
+		round_key = calc_round_key(key, 0)
+		text[n] = AddRoundKey(text[n], round_key)
+		for i in range(rounds - 1):
+			round_key = calc_round_key(key, i + 1)
 			text[n] = SubBytes(text[n], mode)
 			text[n] = ShiftRows(text[n], mode)
 			text[n] = MixColumns(text[n], mode)
 			text[n] = AddRoundKey(text[n], round_key)
+		#the last rount is special
+		round_key = calc_round_key(key, rounds)
+		text[n] = SubBytes(text[n], mode)
+		text[n] = ShiftRows(text[n], mode)
+		text[n] = AddRoundKey(text[n], round_key)
 	print(text)
 	return matrix_to_text(text)
 
@@ -29,13 +37,21 @@ def decript (encripted_text, key):
 	print('decripting')
 	text = text_to_matrix(encripted_text)
 	num_blocks = len(text)
-	for n in range(num_blocks):
-		for i in range(rounds):
+	for n in range(num_blocks - 1, -1, -1):
+		round_key = calc_round_key(key, rounds)
+		text[n] = AddRoundKey(text[n], round_key)
+		for i in range(rounds - 1, 0, -1):
 			round_key = calc_round_key(key, i)
-			text[n] = SubBytes(text[n], mode)
 			text[n] = ShiftRows(text[n], mode)
-			text[n] = MixColumns(text[n], mode)
+			text[n] = SubBytes(text[n], mode)
 			text[n] = AddRoundKey(text[n], round_key)
+			text[n] = MixColumns(text[n], mode)
+		#the last round is special
+		round_key = calc_round_key(key, 0)	
+		text[n] = ShiftRows(text[n], mode)
+		text[n] = SubBytes(text[n], mode)
+		text[n] = AddRoundKey(text[n], round_key)	
+
 	print(text)
 	return matrix_to_text(text)
 
@@ -150,7 +166,7 @@ def mult_gf(a, b):
 
 def SubBytes(text, mode):
 	'use sboxes to replace bytes'
-	#adding zero of hex numns of len = 1
+	#adding zero to hex nums of len = 1
 	for i in range(4):
 		for j in range(4):
 			if(len(text[i][j]) == 1):
