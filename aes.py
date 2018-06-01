@@ -18,7 +18,7 @@ def encript (plain_text, key):
 			round_key = calc_round_key(key, i + 1)
 			text[n] = SubBytes(text[n], mode)
 			text[n] = ShiftRows(text[n], mode)
-			text[n] = MixColumns(text[n], mode)
+			#text[n] = MixColumns(text[n], mode)
 			text[n] = AddRoundKey(text[n], round_key)
 		#the last rount is special
 		round_key = calc_round_key(key, rounds)
@@ -37,7 +37,7 @@ def decript (encripted_text, key):
 	print('decripting')
 	text = text_to_matrix(encripted_text)
 	num_blocks = len(text)
-	for n in range(num_blocks - 1, -1, -1):
+	for n in range(num_blocks):
 		round_key = calc_round_key(key, rounds)
 		text[n] = AddRoundKey(text[n], round_key)
 		for i in range(rounds - 1, 0, -1):
@@ -45,7 +45,7 @@ def decript (encripted_text, key):
 			text[n] = ShiftRows(text[n], mode)
 			text[n] = SubBytes(text[n], mode)
 			text[n] = AddRoundKey(text[n], round_key)
-			text[n] = MixColumns(text[n], mode)
+			#text[n] = MixColumns(text[n], mode)
 		#the last round is special
 		round_key = calc_round_key(key, 0)	
 		text[n] = ShiftRows(text[n], mode)
@@ -153,7 +153,8 @@ def sub_word(word):
 def mult_gf(a, b):
 	'multiplication in gf(2^8)'
 	#this function is probably incorrect
-	if (format(a, 'b')[0] == '0'):
+	print(format(a, 'b'))
+	if (len(format(a, 'b')) <= 6):
 		return a
 	else:
 		a = format(a, 'x')
@@ -223,5 +224,5 @@ def AddRoundKey(text, key):
 	'xor between the text and the round key'
 	for i in range(4):
 		for j in range(4):
-			text[i][j] = format( int( text[i][j], 16) ^ int( key[i][j], 16) , 'x')
+			text[i][j] = format( int(text[i][j], 16) ^ int(key[i][j], 16) , 'x')
 	return text
