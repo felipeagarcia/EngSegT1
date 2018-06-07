@@ -15,13 +15,18 @@ if __name__ == '__main__':
 			#reading key file
 			with open(keyf_name, 'r') as key_file:
 				key = key_file.read()
+				key1 = key[0:16]
+				key2 = key[16:32]
+				key3 = key[32:48]
 			#reading plain text file
 			with open(plain_text_file_name, 'r') as plain_text_file:
 				plain_text = plain_text_file.read()
 			#oppening encripted text file and writing the
 			#encripted text on it
 			with open(encrpited_text_file_name, 'w') as encrpited_text_file:
-				encripted_text = aes.encript(plain_text, key)
+				encripted_text = aes.encript(plain_text, key1)
+				encripted_text = aes.encript(encripted_text, key2)
+				encripted_text = aes.encript(encripted_text, key3)
 				encrpited_text_file.write(encripted_text)
 			print(plain_text)
 			print(encripted_text)
@@ -38,10 +43,15 @@ if __name__ == '__main__':
 			encrpited_text_file_name = sys.argv[3]
 			with open(keyf_name, 'r') as key_file:
 				key = key_file.read()
+				key1 = key[0:16]
+				key2 = key[16:32]
+				key3 = key[32:48]
 			with open(encrpited_text_file_name, 'r') as encrpited_text_file:
 				encripted_text = encrpited_text_file.read()
 			with open(plain_text_file_name, 'w') as plain_text_file:
-				plain_text = aes.decript(encripted_text, key)
+				plain_text = aes.decript(encripted_text, key3)
+				plain_text = aes.decript(plain_text, key2)
+				plain_text = aes.decript(plain_text, key1)
 				plain_text_file.write(plain_text)
 			print(encripted_text)
 			print(plain_text)
