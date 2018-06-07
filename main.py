@@ -18,6 +18,9 @@ if __name__ == '__main__':
 				key1 = key[0:16]
 				key2 = key[16:32]
 				key3 = key[32:48]
+				print(key1)
+				print(key2)
+				print(key3)
 			#reading plain text file
 			with open(plain_text_file_name, 'r') as plain_text_file:
 				plain_text = plain_text_file.read()

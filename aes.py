@@ -105,6 +105,8 @@ def matrix_to_text(text_matrix):
 def key_expansion(key, num_bytes= 16):
     #separating key in a list
     key = list(key)
+    #converting text to ascii
+    key = [ord(x) for x in key]
     #converting to hex
     key = [format(int(x), 'x') for x in key]
     #adding '0' when necessary
