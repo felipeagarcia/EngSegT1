@@ -103,16 +103,19 @@ def matrix_to_text(text_matrix):
 
 
 def key_expansion(key, num_bytes= 16):
+    print(key)
     #separating key in a list
     key = list(key)
     #converting text to ascii
     key = [ord(x) for x in key]
     #converting to hex
     key = [format(int(x), 'x') for x in key]
+    print(key)
     #adding '0' when necessary
     for i in range(len(key)):
         if(len(key[i]) == 1):
             key[i] = '0' + key[i]
+    print(key)
     n = len(key)
     if n > num_bytes :
         print("The key is larger than the value allowed")
@@ -131,6 +134,7 @@ def key_expansion(key, num_bytes= 16):
                     )
     for i in range(4, 44):
         temp = word[i - 1]
+        print(temp)
         if (i % 4 == 0):
             temp = int(sub_word(rot_word(temp, 2)),16) ^ int(rcon[int(i/4)], 16)
         else:
@@ -146,6 +150,8 @@ def inv_rot_word(word, n):
 
 def sub_word(word):
     l = []
+    if(len(word) == 7):
+        word = '0' + word
     #apply the sbox
     for i in range(4):
         l.append(format(s_box[int((word)[i*2:i*2 + 1], 16) * 16 +  int((word)[i*2 + 1:i*2 + 2], 16) ], 'x'))
